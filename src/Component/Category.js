@@ -3,9 +3,18 @@ import axios from 'axios';
 import { showToast } from '../UtilComponent/ToastUtil';
 import { ClipLoader } from 'react-spinners';
 import Pagination from '../UtilComponent/PaginationUtil'
+import useAuth from '../UtilComponent/AuthUtil';
+
 
 const Category = () => {
   const UserInfo = JSON.parse(localStorage.getItem('userData'));
+  const axiosInstance = axios.create({
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
+  const { checkTokenValidity } = useAuth();
   const [categories, setCategories] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newCategory, setNewCategory] = useState({
@@ -22,7 +31,6 @@ const Category = () => {
     CategoryName: '',
     CategoryDescription: '',
   });
-
   const userData = {
     UserData: {
       token: null,
@@ -43,21 +51,33 @@ const Category = () => {
       setCurrentPage(page);
     }
   };
+
   const fetchCategories = async () => {
     try {
-      const response = await axios.post('/api/1/products/getcategories', userData);
+      const response = await axiosInstance.post('/api/1/products/getcategories', userData);
 
       if (response.data.status === 1) {
         setCategories(response.data.categoryList);
       } else {
         console.error('Error fetching categories:', response.data.message);
+        showToast(`Error : ${response.data.message}`,true);
       }
     } catch (error) {
-      console.error('An unexpected error occurred while fetching categories:', error);
+      showToast(`Error : ${error.response.data}`,false);
+      console.error(`Error : ${error.response.data}`, error);
+      if(error.response.status === 401)
+      {
+        checkTokenValidity();
+      }
     }finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Check token expiration when the component mounts
+    checkTokenValidity();
+  }, []);
   useEffect(() => {
   fetchCategories();
 }, []);
@@ -81,10 +101,10 @@ useEffect(() => {
 
   const handleCreateCategory = async () => {
     try {
-      const response = await axios.post('/api/1/products/setcategory', newCategory);
+      const response = await axiosInstance.post('/api/1/products/setcategory', newCategory);
 
       if (response.data.status === 1) {
-        showToast('Category created successfully.');
+        showToast('Category created successfully.',true);
         fetchCategories();
         setIsPopupOpen(false);
         setNewCategory({
@@ -99,14 +119,19 @@ useEffect(() => {
         showToast(`Error creating category: ${response.data.message}`, false);
       }
     } catch (error) {
-      showToast('An unexpected error occurred while creating category.', false);
+      showToast(`Error : ${error.response.data}`, false);
+      console.error(`Error : ${error.response.data}`, error);
+      if(error.response.status === 401)
+      {
+        checkTokenValidity();
+      }
     }
   };
 
   const handleDeleteCategory = async (categoryId) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        const response = await axios.post('/api/1/products/deletecategory', {
+        const response = await axiosInstance.post('/api/1/products/deletecategory', {
           UserData: userData.UserData,
           CategoryId: categoryId,
         });
@@ -118,7 +143,12 @@ useEffect(() => {
           showToast(`Error deleting category: ${response.data.message}`, false);
         }
       } catch (error) {
-        showToast('An unexpected error occurred while deleting category.', false);
+        showToast(`Error : ${error.response.data}`,false);
+      console.error(`Error : ${error.response.data}`, error);
+      if(error.response.status === 401)
+      {
+        checkTokenValidity();
+      }
       }
     }
   };
@@ -134,7 +164,7 @@ useEffect(() => {
 
   const handleUpdateCategory = async (categoryId) => {
     try {
-      const response = await axios.post('/api/1/products/updatecategory', {
+      const response = await axiosInstance.post('/api/1/products/updatecategory', {
         ...updatedCategory,
         CategoryId: categoryId,
       });
@@ -151,7 +181,12 @@ useEffect(() => {
         showToast(`Error updating category: ${response.data.message}`, false);
       }
     } catch (error) {
-      showToast('An unexpected error occurred while updating category.', false);
+      showToast(`Error : ${error.response.data}`,false);
+      console.error(`Error : ${error.response.data}`, error);
+      if(error.response.status === 401)
+      {
+        checkTokenValidity();
+      }
     }
   };
 
