@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import axios from 'axios';
-import { showToast, ToastUtils } from '../UtilComponent/ToastUtil';
+import { showToast } from '../UtilComponent/ToastUtil';
 
 const Home = () => {
   const UserInfo = JSON.parse(localStorage.getItem('userData'));
@@ -41,10 +41,9 @@ const Home = () => {
       console.error('An unexpected error occurred while fetching categories:', error);
     }
   };
-
   useEffect(() => {
-    fetchCategories();
-  }, []);
+  fetchCategories();
+}, []);
 
   const handlePopupToggle = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -206,6 +205,7 @@ const Home = () => {
                     <input
                       type="text"
                       value={updatedCategory.CategoryName}
+                      required
                       onChange={(e) =>
                         setUpdatedCategory((prevCategory) => ({
                           ...prevCategory,
@@ -222,6 +222,7 @@ const Home = () => {
                     <input
                       type="text"
                       value={updatedCategory.CategoryDescription}
+                      required
                       onChange={(e) =>
                         setUpdatedCategory((prevCategory) => ({
                           ...prevCategory,
