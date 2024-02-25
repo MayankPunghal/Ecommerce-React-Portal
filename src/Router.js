@@ -1,5 +1,7 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Category from './Component/Category';
+import Product from './Component/Product';
 import Home from './Component/Home';
 import Login from './Component/Login';
 import Landing from './Component/Landing';
@@ -11,6 +13,8 @@ const AppRouter = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/category" element={<PrivateRoute element={<Category />} />} />
+        <Route path="/product" element={<PrivateRoute element={<Product />} />} />
         <Route path="/home" element={<PrivateRoute element={<Home />} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
