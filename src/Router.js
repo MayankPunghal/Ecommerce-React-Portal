@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Category from './Component/Category';
 import Product from './Component/Product';
-import Home from './Component/Home';
+import AdminPortal from './Component/AdminPortal';
 import Login from './Component/Login';
 import Landing from './Component/Landing';
 import SignUp from './Component/SignUp';
@@ -15,7 +15,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/category" element={<PrivateRoute element={<Category />} />} />
         <Route path="/product" element={<PrivateRoute element={<Product />} />} />
-        <Route path="/home" element={<PrivateRoute element={<Home />} />} />
+        <Route path="/adminPortal" element={<PrivateRoute element={<AdminPortal />} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/test" element={<Test />} />

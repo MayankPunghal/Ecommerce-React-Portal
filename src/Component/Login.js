@@ -38,10 +38,20 @@ const Login = () => {
         // Successful login
         // Store user data in localStorage
         localStorage.setItem('userData', JSON.stringify(response.data.user));
+        const [tokenPart, expirationInMinutesPart] = response.data.token.split(',');
+        // Trim both parts
+        const trimmedToken = tokenPart.trim();
+        const trimmedExpirationInMinutes = parseInt(expirationInMinutesPart.trim());
+        const loginTime = new Date();
+        const tokenExpirationTime = new Date(loginTime.getTime() + trimmedExpirationInMinutes * 60000);
+        localStorage.setItem('token', trimmedToken);
+        localStorage.setItem('expirationInMinutes', trimmedExpirationInMinutes);
+        localStorage.setItem('loginTime', loginTime);
+        localStorage.setItem('tokenExpirationTime', tokenExpirationTime);
         showToast(`Welcome back, ${response.data.user.userName}!`);
         // Redirect to the home page after 1 second using navigate
         setTimeout(() => {
-          navigate('/home'); // Use navigate to redirect
+          navigate('/AdminPortal'); // Use navigate to redirect
         }, 1000);
       } else {
         // Unsuccessful login
@@ -49,7 +59,7 @@ const Login = () => {
       }
     } catch (error) {
       // Handle other errors
-      showToast(`An unexpected error occurred. Please try again later.`, false);
+      showToast(`Error: ${error.response.data.message}`, false);
     }
   };
 

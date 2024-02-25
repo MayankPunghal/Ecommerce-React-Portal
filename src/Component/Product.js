@@ -3,9 +3,17 @@ import axios from 'axios';
 import { showToast } from '../UtilComponent/ToastUtil';
 import { ClipLoader } from 'react-spinners';
 import Pagination from '../UtilComponent/PaginationUtil';
+import useAuth from '../UtilComponent/AuthUtil';
 
 const Product = () => {
   const UserInfo = JSON.parse(localStorage.getItem('userData'));
+  const axiosInstance = axios.create({
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
+  const { checkTokenValidity } = useAuth();
   const [products, setProducts] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -59,7 +67,7 @@ const Product = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.post('/api/1/products/getproducts', userData);
+      const response = await axiosInstance.post('/api/1/products/getproducts', userData);
 
       if (response.data.status === 1) {
         setProducts(response.data.productList);
@@ -67,7 +75,12 @@ const Product = () => {
         console.error('Error fetching products:', response.data.message);
       }
     } catch (error) {
-      console.error('An unexpected error occurred while fetching products:', error);
+        showToast(`Error : ${error.response.data}`,false);
+        console.error(`Error : ${error.response.data}`, error);
+        if(error.response.status === 401)
+        {
+          checkTokenValidity();
+        }
     } finally {
       setLoading(false);
     }
@@ -81,7 +94,7 @@ const Product = () => {
     // Fetch categories list
     const fetchCategoriesList = async () => {
       try {
-        const response = await axios.post('/api/1/products/getcategories', userData);
+        const response = await axiosInstance.post('/api/1/products/getcategories', userData);
   
         if (response.data.status === 1) {
           setCategoriesList(response.data.categoryList);
@@ -89,7 +102,12 @@ const Product = () => {
           console.error('Error fetching categories:', response.data.message);
         }
       } catch (error) {
-        console.error('An unexpected error occurred while fetching categories:', error);
+        showToast(`Error : ${error.response.data}`,false);
+      console.error(`Error : ${error.response.data}`, error);
+      if(error.response.status === 401)
+      {
+        checkTokenValidity();
+      }
       }
     };
   
@@ -130,7 +148,7 @@ const Product = () => {
 
   const handleCreateProduct = async () => {
     try {
-      const response = await axios.post('/api/1/products/setproduct', newProduct);
+      const response = await axiosInstance.post('/api/1/products/setproduct', newProduct);
 
       if (response.data.status === 1) {
         showToast('Product created successfully.');
@@ -153,14 +171,19 @@ const Product = () => {
         showToast(`Error creating product: ${response.data.message}`, false);
       }
     } catch (error) {
-      showToast('An unexpected error occurred while creating product.', false);
+        showToast(`Error : ${error.response.data}`,false);
+        console.error(`Error : ${error.response.data}`, error);
+        if(error.response.status === 401)
+        {
+          checkTokenValidity();
+        }
     }
   };
 
   const handleDeleteProduct = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        const response = await axios.post('/api/1/products/deleteproduct', {
+        const response = await axiosInstance.post('/api/1/products/deleteproduct', {
           UserData: userData.UserData,
           ProductId: productId,
         });
@@ -202,7 +225,7 @@ const Product = () => {
 
   const handleUpdateProduct = async (productId) => {
     try {
-      const response = await axios.post('/api/1/products/updateproduct', {
+      const response = await axiosInstance.post('/api/1/products/updateproduct', {
         ...updatedProduct,
         ProductId: productId,
       });
@@ -224,7 +247,12 @@ const Product = () => {
         showToast(`Error updating product: ${response.data.message}`, false);
       }
     } catch (error) {
-      showToast('An unexpected error occurred while updating product.', false);
+        showToast(`Error : ${error.response.data}`,false);
+        console.error(`Error : ${error.response.data}`, error);
+        if(error.response.status === 401)
+        {
+          checkTokenValidity();
+        }
     }
   };
 
