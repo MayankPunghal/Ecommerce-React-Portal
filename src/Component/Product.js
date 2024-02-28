@@ -4,6 +4,7 @@ import { showToast } from '../UtilComponent/ToastUtil';
 import { ClipLoader } from 'react-spinners';
 import Pagination from '../UtilComponent/PaginationUtil';
 import useAuth from '../UtilComponent/AuthUtil';
+import {Link} from 'react-router-dom'
 
 const Product = () => {
   const UserInfo = JSON.parse(localStorage.getItem('userData'));
@@ -257,7 +258,9 @@ const Product = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 overflow-x-auto">
+    <div className="container mx-auto p-4 overflow-x-auto mt-5">
+      <Link to="/Ecom/home" className="text-blue-500 hover:underline text-xl">Back</Link>
+      <div className="flex justify-between items-center mb-4">
       <h2 className="text-3xl mb-4">PRODUCTS</h2>
       <button
         className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue top-4 right-4"
@@ -265,6 +268,7 @@ const Product = () => {
       >
         Create Product
       </button>
+      </div>
       {!loading && isPopupOpen && (
         <div
           className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50"

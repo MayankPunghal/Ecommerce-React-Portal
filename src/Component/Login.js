@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate
 import { showToast, ToastUtils } from '../UtilComponent/ToastUtil';
 
 const Login = () => {
@@ -18,6 +18,11 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    // Clear localStorage on component mount (login page load)
+    localStorage.clear();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +71,7 @@ const Login = () => {
   return (
     <>
     <ToastUtils />
+    <Link to="/" className="text-blue-500 hover:underline">Back</Link>
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4">Login</h2>

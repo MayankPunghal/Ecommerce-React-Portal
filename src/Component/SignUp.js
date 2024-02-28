@@ -3,8 +3,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { showToast, ToastUtils } from '../UtilComponent/ToastUtil';
+import useAuth from '../UtilComponent/AuthUtil';
 
 const SignUp = () => {
+  const axiosInstance = axios.create({
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
   const [formData, setFormData] = useState({
     userName: '',
     userEmail: '',
@@ -12,7 +19,7 @@ const SignUp = () => {
     firstName: '',
     lastName: '',
   });
-
+  const { checkTokenValidity } = useAuth();
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,7 +31,7 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/1/users/setuser', formData);
+      const response = await axiosInstance.post('/api/1/users/registeruser', formData);
       console.log(response.data);
       if(response.data.status === 1)
       {
@@ -35,13 +42,19 @@ const SignUp = () => {
         showToast(`Error: ${response.data.message}`, false);
       }
     } catch (error) {
-      console.error('Error signing up:', error.message);
+      showToast(`Error : ${error.response.data}`,false);
+      console.error(`Error : ${error.response.data}`, error);
+      if(error.response.status === 401)
+      {
+        checkTokenValidity();
+      }
     }
   };
 
   return (
     <>
      <ToastUtils />
+     <Link to="/" className="text-blue-500 hover:underline">Back</Link>
      <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded shadow-md">
       <h2 className="text-3xl font-bold mb-6">Sign Up</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
