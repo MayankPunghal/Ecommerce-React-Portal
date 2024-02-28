@@ -60,7 +60,7 @@ const Category = () => {
         setCategories(response.data.categoryList);
       } else {
         console.error('Error fetching categories:', response.data.message);
-        showToast(`Error : ${response.data.message}`,true);
+        showToast(`Error : ${response.data.message}`,false);
       }
     } catch (error) {
       showToast(`Error : ${error.response.data}`,false);
@@ -162,6 +162,20 @@ useEffect(() => {
     });
   };
 
+  const handleEscapeKeyPress = (e) => {
+    if (e.key === 'Escape') {
+      setIsPopupOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscapeKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKeyPress);
+    };
+  }, []);
+
   const handleUpdateCategory = async (categoryId) => {
     try {
       const response = await axiosInstance.post('/api/1/products/updatecategory', {
@@ -191,14 +205,14 @@ useEffect(() => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-3xl mb-4">CATEGORIES</h2>
-      <button
-        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue absolute top-4 right-4"
-        onClick={handlePopupToggle}
-      >
-        Create Category
-      </button>
+    <div className="container mx-auto p-4 ">
+    <h2 className="text-3xl mb-4">CATEGORIES</h2>
+    <button
+      className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue top-4 right-4"
+      onClick={handlePopupToggle}
+    >
+      Create Category
+    </button>
       {!loading && isPopupOpen && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 rounded shadow-md max-w-md w-full">
@@ -239,12 +253,31 @@ useEffect(() => {
               >
                 Create
               </button>
+              <button
+                type="button"
+                className="bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:shadow-outline-red ml-2"
+                onClick={() => {
+                  setIsPopupOpen(false);
+                  setNewCategory({
+                    UserData: {
+                      token: null,
+                      userId: parseInt(UserInfo.userId),
+                    },
+                    CategoryName: '',
+                    CategoryDescription: '',
+                  });
+                }}
+              >
+                Close
+              </button>
             </form>
           </div>
         </div>
       )}
       <div className="container mx-auto p-4">
-      {!loading && <table className="w-full border-collapse border border-gray-800">
+      {!loading && 
+      <div className="overflow-x-auto">
+      <table className="w-full table-auto border-collapse border border-gray-800">
           <thead>
             <tr>
               <th className="border border-gray-800 p-2">Category Name</th>
@@ -337,7 +370,8 @@ useEffect(() => {
               </tr>
             ))}
           </tbody>
-        </table>}
+        </table>
+        </div>}
       {!loading &&<Pagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -348,7 +382,7 @@ useEffect(() => {
       </div>}
       </div>
     </div>
-  );
+  )
 };
 
 export default Category;

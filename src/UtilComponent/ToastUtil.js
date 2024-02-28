@@ -6,7 +6,7 @@ const showToast = (message, isSuccess = true) => {
   const toastOptions = {
     position: 'top-left',
     autoClose: isSuccess ? 1000 : 2000,
-    hideProgressBar: true,
+    hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,

@@ -11,7 +11,7 @@ const HealthCheck = () => {
     const checkHealth = async () => {
       try {
         const response = await fetch('/api/1/general/checkhealth');
-        console.log("Check Health Resp : ", response)
+        // console.log("Check Health Resp : ", response)
         if (response.ok) {
           const result = await response.json();
           setIsApiHealthy(result.status === 'ok');
@@ -32,7 +32,7 @@ const HealthCheck = () => {
   ) : isApiHealthy ? (
     // Render your main app if the API is healthy
     <React.StrictMode>
-      <App />
+      <App className="max-w-screen-md"/>
       <ToastContainer />
     </React.StrictMode>
   ) : (

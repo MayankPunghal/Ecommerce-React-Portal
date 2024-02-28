@@ -7,13 +7,13 @@ const Landing = () => {
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-4">Welcome to My App!</h2>
         <Link
-          to="/login"
+          to="login"
           className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mr-2"
         >
           Login
         </Link>
         <Link
-          to="/signup"
+          to="signup"
           className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
         >
           Sign Up

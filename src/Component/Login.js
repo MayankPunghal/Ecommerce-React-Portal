@@ -51,7 +51,7 @@ const Login = () => {
         showToast(`Welcome back, ${response.data.user.userName}!`);
         // Redirect to the home page after 1 second using navigate
         setTimeout(() => {
-          navigate('/AdminPortal'); // Use navigate to redirect
+          navigate('/Ecom/home'); // Use navigate to redirect
         }, 1000);
       } else {
         // Unsuccessful login

@@ -257,10 +257,10 @@ const Product = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 overflow-x-auto">
       <h2 className="text-3xl mb-4">PRODUCTS</h2>
       <button
-        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue absolute top-4 right-4"
+        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue top-4 right-4"
         onClick={handlePopupToggle}
       >
         Create Product
@@ -417,7 +417,7 @@ const Product = () => {
       )}
       <div className="container mx-auto p-4">
         {!loading && (
-          <table className="w-full border-collapse border border-gray-800">
+          <table className="w-full table-auto border-collapse border border-gray-800">
             <thead>
               <tr>
                 <th className="border border-gray-800 p-2">Product Name</th>
