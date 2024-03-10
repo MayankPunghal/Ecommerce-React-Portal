@@ -61,10 +61,10 @@ const Category = () => {
         setCategories(response.data.categoryList);
       } else {
         console.error('Error fetching categories:', response.data.message);
-        showToast(`Error : ${response.data.message}`,false);
+        showToast(`Error : ${response.data.message}`,false, 2000);
       }
     } catch (error) {
-      showToast(`Error : ${error.response.data}`,false);
+      showToast(`Error : ${error.response.data}`,false, 2000);
       console.error(`Error : ${error.response.data}`, error);
       if(error.response.status === 401)
       {
@@ -105,7 +105,7 @@ useEffect(() => {
       const response = await axiosInstance.post('/api/1/products/setcategory', newCategory);
 
       if (response.data.status === 1) {
-        showToast('Category created successfully.',true);
+        showToast('Category created successfully.',true, 1000);
         fetchCategories();
         setIsPopupOpen(false);
         setNewCategory({
@@ -117,10 +117,10 @@ useEffect(() => {
           CategoryDescription: '',
         });
       } else {
-        showToast(`Error creating category: ${response.data.message}`, false);
+        showToast(`Error creating category: ${response.data.message}`, false, 2000);
       }
     } catch (error) {
-      showToast(`Error : ${error.response.data}`, false);
+      showToast(`Error : ${error.response.data}`, false, 2000);
       console.error(`Error : ${error.response.data}`, error);
       if(error.response.status === 401)
       {
@@ -138,10 +138,10 @@ useEffect(() => {
         });
 
         if (response.data.status === 1) {
-          showToast('Category deleted successfully.');
+          showToast('Category deleted successfully.', true, 1000);
           fetchCategories();
         } else {
-          showToast(`Error deleting category: ${response.data.message}`, false);
+          showToast(`Error deleting category: ${response.data.message}`, false, 2000);
         }
       } catch (error) {
         showToast(`Error : ${error.response.data}`,false);
@@ -185,7 +185,7 @@ useEffect(() => {
       });
 
       if (response.data.status === 1) {
-        showToast('Category updated successfully.');
+        showToast('Category updated successfully.', true, 1000);
         setEditingCategoryId(null);
         setUpdatedCategory({
           CategoryName: '',
@@ -193,10 +193,10 @@ useEffect(() => {
         });
         fetchCategories();
       } else {
-        showToast(`Error updating category: ${response.data.message}`, false);
+        showToast(`Error updating category: ${response.data.message}`, false, 2000);
       }
     } catch (error) {
-      showToast(`Error : ${error.response.data}`,false);
+      showToast(`Error : ${error.response.data}`,false, 2000);
       console.error(`Error : ${error.response.data}`, error);
       if(error.response.status === 401)
       {
@@ -296,6 +296,7 @@ useEffect(() => {
                   {editingCategoryId === category.categoryId ? (
                     <input
                       type="text"
+                      className="mt-1 p-2 border border-gray-300 rounded w-full"
                       value={updatedCategory.CategoryName}
                       required
                       onChange={(e) =>
@@ -313,6 +314,7 @@ useEffect(() => {
                   {editingCategoryId === category.categoryId ? (
                     <input
                       type="text"
+                      className="mt-1 p-2 border border-gray-300 rounded w-full"
                       value={updatedCategory.CategoryDescription}
                       required
                       onChange={(e) =>

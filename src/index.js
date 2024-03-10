@@ -6,19 +6,19 @@ import { ToastContainer } from 'react-toastify';
 
 const HealthCheck = () => {
   const [isApiHealthy, setIsApiHealthy] = useState(null);
-
   useEffect(() => {
     const checkHealth = async () => {
       try {
         const response = await fetch('/api/1/general/checkhealth');
-        // console.log("Check Health Resp : ", response)
         if (response.ok) {
           const result = await response.json();
           setIsApiHealthy(result.status === 'ok');
         } else {
+          console.log(response);
           setIsApiHealthy(false);
         }
       } catch (error) {
+        console.log(error);
         setIsApiHealthy(false);
       }
     };
@@ -27,17 +27,19 @@ const HealthCheck = () => {
   }, []);
 
   return isApiHealthy === null ? (
-    // Loading or placeholder UI while checking health
     <div>Loading...</div>
   ) : isApiHealthy ? (
-    // Render your main app if the API is healthy
     <React.StrictMode>
       <App className="max-w-screen-md"/>
       <ToastContainer />
     </React.StrictMode>
   ) : (
-    // Display an error message if the API is not healthy
-    <div><b> 503 </b>Uh oh! Something went wrong. Service Unavailable.</div>
+    // Styled 503 error message
+    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#f8d7da', color: '#721c24', border: '1px solid #f5c6cb', borderRadius: '5px' }}>
+      <h1 style={{ fontSize: '48px', marginBottom: '10px' }}>503 Service Unavailable</h1>
+      <p style={{ fontSize: '18px' }}>Uh oh! Something went wrong. Our service is currently unavailable. Please try again later.</p>
+      {/* You can add more styling or even an image here */}
+    </div>
   );
 };
 
