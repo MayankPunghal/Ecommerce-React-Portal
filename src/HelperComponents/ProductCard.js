@@ -92,7 +92,7 @@ const ProductCard = ({
                                 )
                             }
                         </div>
-                        <div className="h-16">
+                        <div className="min-h-16">
                             <div className="text-gray-700 text-base mb-2">
                                 {editingProductId === product.productID ?
                                     (

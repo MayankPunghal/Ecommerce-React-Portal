@@ -87,7 +87,7 @@ const ProfileDataPopup = ({ togglePopup, showPopup, user }) => {
         </svg>
       </div>
       {showPopup && (
-        <div className="top-15 right-2 bg-white border shadow-md rounded-md fixed">
+        <div className="top-15 right-1 bg-white border shadow-md rounded-md fixed mt-3">
           {/* Add some styling here */}
           <p className="text-gray-800 rounded-t-md p-4 border-b-2">
               {/* <AvatarInitials initials={getInitials(user.userName)}/> */}

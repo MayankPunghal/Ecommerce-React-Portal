@@ -28,7 +28,7 @@ const Product = () => {
     Price: 0,
     StockQuantity: 0,
     IsActive: true,
-    CategoryId: null,
+    CategoryId: undefined,
     ImageName: '',
     ImageSrc: defaultImgSrc,
     ImageFile: ''
@@ -42,7 +42,7 @@ const Product = () => {
     StockQuantity: 0,
     ImageName: '',
     IsActive: true,
-    CategoryId: null,
+    CategoryId: undefined,
   });
 
   const userData = {
@@ -67,7 +67,7 @@ const Product = () => {
     else {
       setNewProduct({
         ...newProduct,
-        ImageFile: null,
+        ImageFile: undefined,
         ImageSrc: defaultImgSrc
       })
     }

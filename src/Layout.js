@@ -20,10 +20,10 @@ const Layout = ({ children }) => {
       <SessionUtil timeoutInMinutes={5} />
       {shouldshowPopup && (
         <div>
-          <div className="fixed top-0 left-0 p-4 w-36 h-auto z-10">
+          <div className="fixed top-0 left-0 p-4 w-36 h-auto z-20">
             <img src="/EcomDemoIconPng.png" className=""/>
           </div>
-        <div className="fixed top-0 right-0 p-4 h-14 w-full backdrop-blur-sm">
+        <div className="fixed top-0 right-0 p-4 h-14 w-full backdrop-blur-sm z-10 brightness-90">
           <ProfileDataPopup togglePopup={togglePopup} showPopup={showPopup} user={loggedInUser} />
         </div>
         </div>

@@ -21,7 +21,7 @@ const SignUp = () => {
     firstName: '',
     lastName: '',
     imageName: '',
-    imageFile: null,
+    imageFile: undefined,
     imageSrc: defaultImgSrc
 
   });
