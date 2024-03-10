@@ -71,11 +71,11 @@ const ProductCard = ({
                         <ImageUtil imageCategory="Products" imageName={product.imageName} altName={product.ProductName}/>
                     </div>
                     <div className="px-6 py-4">
-                        <div className="font-bold text-xl mb-2">
+                        <div className="font-bold text-xl mb-2 min-h-16">
                             {editingProductId === product.productID ?
                                 (
                                     <input
-                                        className="border border-gray-800 p-2 rounded w-48"
+                                        className="border border-gray-800 p-2 rounded w-48 overflow-hidden line-clamp-2"
                                         type="text"
                                         value={updatedProduct.ProductName}
                                         onChange={(e) =>
@@ -86,14 +86,14 @@ const ProductCard = ({
                                         }
                                     />) :
                                 (
-                                    <div>
+                                    <div className="max-w-[200px] overflow-hidden line-clamp-2 overflow-ellipsis">
                                         {product.productName}
                                     </div>
                                 )
                             }
                         </div>
                         <div className="min-h-16">
-                            <div className="text-gray-700 text-base mb-2">
+                            <div className="text-gray-700 text-base mb-2 overflow-hidden line-clamp-3">
                                 {editingProductId === product.productID ?
                                     (
                                         <input
@@ -108,7 +108,7 @@ const ProductCard = ({
                                             }
                                         />) :
                                     (
-                                        <div className="overflow-hidden overflow-ellipsis">
+                                        <div className="max-w-[200px] overflow-hidden line-clamp-2 overflow-ellipsis">
                                             {product.description}
                                         </div>
                                     )
@@ -160,7 +160,9 @@ const ProductCard = ({
 
                         </div> */}
                         <div className="text-gray-700 text-sm mb-2">
-                            Category:
+                            <b>
+                            Category :
+                            </b>
                             {editingProductId === product.productID ? (
                                 <select
                                     className="mt-1 p-2 border border-gray-800 rounded w-full"
