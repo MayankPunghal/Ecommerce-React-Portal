@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate
 import { showToast, ToastUtils } from '../UtilComponent/ToastUtil';
+import EncryptionUtil from '../UtilComponent/EncryptionUtil';
 
 const Login = () => {
   const navigate = useNavigate(); // Initialize useNavigate
-
+  // const { encrypt } = EncryptionUtil();
+  
   const [formData, setFormData] = useState({
     userName: '',
     password: '',
   });
+
+  const audience = process.env.REACT_APP_AUDIENCE;
 
   const handleChange = (e) => {
     setFormData({
@@ -19,19 +23,30 @@ const Login = () => {
     });
   };
 
+  useEffect(() => {
+    // Clear localStorage on component mount (login page load)
+    localStorage.clear();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Check for empty inputs
     if (!formData.userName || !formData.password) {
-      showToast('Please fill in all the fields.', false);
+      showToast('Please fill in all the fields.', false, 2000);
       return;
     }
 
     try {
+      // const encryptedData = await encrypt(formData);
       const response = await axios.post(
-        '/api/1/users/loginbyusername' ,
-        formData
+        '/api/1/users/loginbyusername',
+        formData,
+        {
+          headers: {
+            'Audience': audience,
+          }
+        }
       );
 
       if (response.data.status === 1) {
@@ -48,24 +63,25 @@ const Login = () => {
         localStorage.setItem('expirationInMinutes', trimmedExpirationInMinutes);
         localStorage.setItem('loginTime', loginTime);
         localStorage.setItem('tokenExpirationTime', tokenExpirationTime);
-        showToast(`Welcome back, ${response.data.user.userName}!`);
+        showToast(`Welcome back, ${response.data.user.userName}!`, true, 1000);
         // Redirect to the home page after 1 second using navigate
         setTimeout(() => {
-          navigate('/AdminPortal'); // Use navigate to redirect
+          navigate('/Ecom/home'); // Use navigate to redirect
         }, 1000);
       } else {
         // Unsuccessful login
-        showToast(`Error: ${response.data.message}`, false);
+        showToast(`Error: ${response.data.message}`, false, 2000);
       }
     } catch (error) {
       // Handle other errors
-      showToast(`Error: ${error.response.data.message}`, false);
+      showToast(`Error: ${error.response.data.message}`, false, 2000);
     }
   };
 
   return (
     <>
     <ToastUtils />
+    <Link to="/" className="text-blue-500 hover:underline">Back</Link>
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4">Login</h2>
@@ -105,6 +121,9 @@ const Login = () => {
             Login
           </button>
         </form>
+        <p className="mt-4">
+        <Link to="/signup" className="text-blue-500">Create an account</Link>
+      </p>
       </div>
     </div>
     </>

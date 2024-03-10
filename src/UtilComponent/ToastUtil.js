@@ -2,13 +2,13 @@
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const showToast = (message, isSuccess = true) => {
+const showToast = (message, isSuccess = true, duration = 2000, shouldPause = true) => {
   const toastOptions = {
     position: 'top-left',
-    autoClose: isSuccess ? 1000 : 2000,
-    hideProgressBar: true,
+    autoClose: duration,
+    hideProgressBar: false,
     closeOnClick: true,
-    pauseOnHover: true,
+    pauseOnHover: shouldPause,
     draggable: true,
     progress: undefined,
     style: { width: '400%' },
