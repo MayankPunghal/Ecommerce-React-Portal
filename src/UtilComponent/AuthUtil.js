@@ -34,7 +34,7 @@ const useAuth = () => {
         if (payload.exp < currentTimestamp) {
           // Token has expired
           removeToken();
-          showToast('Token expired. Please login again.', false);
+          showToast('Token expired. Please login again.', false, 2000);
           setTimeout(() => redirectToLogin(), 2000);
         }
       } catch (error) {
