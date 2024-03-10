@@ -34,7 +34,6 @@ const Category = () => {
   });
   const userData = {
     UserData: {
-      token: null,
       userId: parseInt(UserInfo.userId),
     },
   };

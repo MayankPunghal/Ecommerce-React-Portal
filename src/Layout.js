@@ -19,12 +19,19 @@ const Layout = ({ children }) => {
     <div style={{ position: 'relative', zIndex: 1 }}>
       <SessionUtil timeoutInMinutes={5} />
       {shouldshowPopup && (
-        <div className="fixed top-0 right-0 p-4">
+        <div>
+          <div className="fixed top-0 left-0 p-4 w-36 h-auto z-20">
+            <img src="/EcomDemoIconPng.png" className=""/>
+          </div>
+        <div className="fixed top-0 right-0 p-4 h-14 w-full backdrop-blur-sm z-10 brightness-90">
           <ProfileDataPopup togglePopup={togglePopup} showPopup={showPopup} user={loggedInUser} />
         </div>
+        </div>
       )}
+      <div className="mt-10">
       {children}
       <Outlet />
+      </div>
     </div>
   );
 };

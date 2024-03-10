@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { showToast } from '../UtilComponent/ToastUtil';
 import { ClipLoader } from 'react-spinners';
-import Pagination from '../UtilComponent/PaginationUtil';
+// import Pagination from '../UtilComponent/PaginationUtil';
 import useAuth from '../UtilComponent/AuthUtil';
 import { Link } from 'react-router-dom'
 import ProductCard from '../HelperComponents/ProductCard'
@@ -14,23 +14,24 @@ const Product = () => {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   });
-
+  const defaultImgSrc = "/Images/no-image-available.png";
   const { checkTokenValidity } = useAuth();
   const [products, setProducts] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({
     UserData: {
-      token: null,
       userId: parseInt(UserInfo.userId),
     },
     ProductName: '',
     Description: '',
     Price: 0,
     StockQuantity: 0,
-    ImageName: '',
     IsActive: true,
-    CategoryId: null,
+    CategoryId: undefined,
+    ImageName: '',
+    ImageSrc: defaultImgSrc,
+    ImageFile: ''
   });
 
   const [editingProductId, setEditingProductId] = useState(null);
@@ -41,31 +42,51 @@ const Product = () => {
     StockQuantity: 0,
     ImageName: '',
     IsActive: true,
-    CategoryId: null,
-});
+    CategoryId: undefined,
+  });
 
   const userData = {
     UserData: {
-      token: null,
       userId: parseInt(UserInfo.userId),
     },
   };
 
+  const showPreivew = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let ImageFile = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = X => {
+        setNewProduct({
+          ...newProduct,
+          ImageFile,
+          ImageSrc: X.target.result
+        })
+      }
+      reader.readAsDataURL(ImageFile)
+    }
+    else {
+      setNewProduct({
+        ...newProduct,
+        ImageFile: undefined,
+        ImageSrc: defaultImgSrc
+      })
+    }
+  }
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [visibleProducts, setVisibleProducts] = useState([]);
   const totalPages = products ? Math.ceil(products.length / itemsPerPage) : 1;
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      const startIdx = (page - 1) * itemsPerPage;
-      const endIdx = startIdx + itemsPerPage;
-      const newVisibleProducts = products ? products.slice(startIdx, endIdx) : [];
-      setVisibleProducts(newVisibleProducts);
-      setCurrentPage(page);
-    }
-  };
+  // const handlePageChange = (page) => {
+  //   if (page >= 1 && page <= totalPages) {
+  //     const startIdx = (page - 1) * itemsPerPage;
+  //     const endIdx = startIdx + itemsPerPage;
+  //     const newVisibleProducts = products ? products.slice(startIdx, endIdx) : [];
+  //     setVisibleProducts(newVisibleProducts);
+  //     setCurrentPage(page);
+  //   }
+  // };
 
   const fetchProducts = async () => {
     try {
@@ -147,8 +168,19 @@ const Product = () => {
   }, []);
 
   const handleCreateProduct = async () => {
+    const productFormData = new FormData()
+    productFormData.append('productName', newProduct.ProductName)
+    productFormData.append('description', newProduct.Description)
+    productFormData.append('price', newProduct.Price)
+    productFormData.append('stockQuantity', newProduct.StockQuantity)
+    productFormData.append('isActive', newProduct.IsActive)
+    productFormData.append('categoryId', newProduct.CategoryId)
+    productFormData.append('imageName', newProduct.ImageName)
+    productFormData.append('imageFile', newProduct.ImageFile)
     try {
-      const response = await axiosInstance.post('/api/1/products/setproduct', newProduct);
+      const response = await axiosInstance.post('/api/1/products/setproduct', productFormData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
 
       if (response.data.status === 1) {
         showToast('Product created successfully.', true, 1000);
@@ -181,18 +213,18 @@ const Product = () => {
 
   const ToggleButton = ({ value, onChange }) => {
     const handleClick = () => {
-        onChange(!value);
+      onChange(!value);
     };
 
     return (
-        <button
-            className={`p-2 rounded ${value ? 'bg-green-500' : 'bg-red-500'} text-white hover:opacity-50 hover:bg-yellow-500 hover:text-black`}
-            onClick={handleClick}
-        >
-            {value ? 'Yes' : 'No'}
-        </button>
+      <button
+        className={`p-2 rounded ${value ? 'bg-green-500' : 'bg-red-500'} text-white hover:opacity-50 hover:bg-yellow-500 hover:text-black`}
+        onClick={handleClick}
+      >
+        {value ? 'Yes' : 'No'}
+      </button>
     );
-};
+  };
 
   const handleDeleteProduct = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
@@ -270,7 +302,7 @@ const Product = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 overflow-x-auto mt-5">
+    <div className="container mx-auto p-4 overflow-x-auto">
       <Link to="/Ecom/home" className="text-blue-500 hover:underline text-xl">Back</Link>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-3xl mb-4">PRODUCTS</h2>
@@ -350,7 +382,7 @@ const Product = () => {
                     required
                   />
                 </div>
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <label htmlFor="imageName" className="block text-sm font-medium text-gray-600">
                     Image Name:
                   </label>
@@ -362,24 +394,13 @@ const Product = () => {
                     onChange={handleInputChange}
                     className="mt-1 p-2 border border-gray-300 rounded w-full"
                   />
-                </div>
-                {/* User will always create a new Product in Active state only */}
-                {/* <div className="mb-4">
-                  <label htmlFor="isActive" className="block text-sm font-medium text-gray-600">
-                    Is Active:
-                  </label>
-                  <select
-                    id="isActive"
-                    name="IsActive"
-                    value={newProduct.IsActive}
-                    onChange={handleInputChange}
-                    className="mt-1 p-2 border border-gray-300 rounded w-full"
-                    required
-                  >
-                    <option value={true}>Yes</option>
-                    <option value={false}>No</option>
-                  </select>
                 </div> */}
+                <div className="flex justify-center">
+                  <img src={newProduct.ImageSrc} className="object-cover w-auto h-auto max-h-48 place-items-center" />
+                </div>
+                <div className="flex justify-center">
+                  <input type="file" accept="image/*" onChange={showPreivew} />
+                </div>
                 <div className="mb-4">
                   <label htmlFor="categoryId" className="block text-sm font-medium text-gray-600">
                     Category Name:
@@ -391,6 +412,7 @@ const Product = () => {
                     value={newProduct.CategoryId}
                     onChange={handleInputChange}
                   >
+                    <option value={0}>Select a category...</option>
                     {categoriesList.map((category) => (
                       <option key={category.categoryId} value={category.categoryId}>
                         {category.categoryName}
@@ -438,12 +460,12 @@ const Product = () => {
           && (
             <ProductCard
               products={visibleProducts}
-              setEditingProductId = {setEditingProductId}
-              editingProductId ={editingProductId}
+              setEditingProductId={setEditingProductId}
+              editingProductId={editingProductId}
               handleDeleteProduct={handleDeleteProduct}
               handleUpdateProduct={handleUpdateProduct}
-              updatedProduct = {updatedProduct}
-              setUpdatedProduct = {setUpdatedProduct}
+              updatedProduct={updatedProduct}
+              setUpdatedProduct={setUpdatedProduct}
               categoriesList={categoriesList}
             />
           )
