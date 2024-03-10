@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import ImageUtil from '../UtilComponent/ImageUtil'; 
 const ToggleButton = ({ value, onChange }) => {
     return (
         <input
@@ -47,7 +47,7 @@ const ProductCard = ({
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((product) => (
-                <div key={product.productID} className={`relative max-w-sm rounded overflow-hidden shadow-lg ${!product.isActive ? 'grayscale' : ''}`}>
+                <div key={product.productID} className={`relative max-w-sm rounded-lg border-t-2 shadow-lg shadow-slate-400 ${!product.isActive ? 'grayscale' : ''}`}>
                     <div className="absolute top-2 right-2 p-2">
                         {editingProductId === product.productID ? (
                             <ToggleButton
@@ -60,12 +60,16 @@ const ProductCard = ({
                                 }
                             />
                         ) : (
-                            <span className={product.isActive ? 'text-green-500' : 'text-red-500'}>
-                                {product.isActive ? 'Active' : 'Inacitve'}
-                            </span>
+                            <></>
+                            // <span className={product.isActive ? 'text-green-500' : 'text-red-500'}>
+                            //     {product.isActive ? 'Active' : 'In-Active'}
+                            // </span>
                         )}
                     </div>
-                    <img className="w-full" src={"C:\\Users\\Mayank.Punghal\\Downloads\\" + product.imageName} alt={product.productName} />
+                    <div className={`flex items-center justify-center h-48 pt-4`}>
+                        {/* <img className="object-cover w-auto h-auto max-h-48" src={`/Images/Products/${product.imageName}`} alt={product.productName} /> */}
+                        <ImageUtil imageCategory="Products" imageName={product.imageName} altName={product.ProductName}/>
+                    </div>
                     <div className="px-6 py-4">
                         <div className="font-bold text-xl mb-2">
                             {editingProductId === product.productID ?
@@ -77,7 +81,7 @@ const ProductCard = ({
                                         onChange={(e) =>
                                             setUpdatedProduct((prevProduct) => ({
                                                 ...prevProduct,
-                                                ProductName: parseInt(e.target.value),
+                                                ProductName: e.target.value,
                                             }))
                                         }
                                     />) :
@@ -88,32 +92,34 @@ const ProductCard = ({
                                 )
                             }
                         </div>
-                        <div className="text-gray-700 text-base mb-2">
-                            {editingProductId === product.productID ?
-                                (
-                                    <input
-                                        className="border border-gray-800 p-2 rounded w-64"
-                                        type="text"
-                                        value={updatedProduct.Description}
-                                        onChange={(e) =>
-                                            setUpdatedProduct((prevProduct) => ({
-                                                ...prevProduct,
-                                                Description: parseInt(e.target.value),
-                                            }))
-                                        }
-                                    />) :
-                                (
-                                    <div>
-                                        {product.description}
-                                    </div>
-                                )
-                            }
+                        <div className="h-16">
+                            <div className="text-gray-700 text-base mb-2">
+                                {editingProductId === product.productID ?
+                                    (
+                                        <input
+                                            className="border border-gray-800 p-2 rounded w-64"
+                                            type="text"
+                                            value={updatedProduct.Description}
+                                            onChange={(e) =>
+                                                setUpdatedProduct((prevProduct) => ({
+                                                    ...prevProduct,
+                                                    Description: e.target.value,
+                                                }))
+                                            }
+                                        />) :
+                                    (
+                                        <div className="overflow-hidden overflow-ellipsis">
+                                            {product.description}
+                                        </div>
+                                    )
+                                }
+                            </div>
                         </div>
                         <div className="text-gray-700 text-sm mb-2">{editingProductId === product.productID ?
                             (
                                 <input
                                     className="border border-gray-800 p-2 rounded mr-2 w-32"
-                                    type="text"
+                                    type="number"
                                     value={updatedProduct.Price}
                                     onChange={(e) =>
                                         setUpdatedProduct((prevProduct) => ({
@@ -133,7 +139,7 @@ const ProductCard = ({
                                 (
                                     <input
                                         className="border border-gray-800 p-2 rounded mr-2 w-12"
-                                        type="text"
+                                        type="number"
                                         value={updatedProduct.StockQuantity}
                                         onChange={(e) =>
                                             setUpdatedProduct((prevProduct) => ({
@@ -157,12 +163,12 @@ const ProductCard = ({
                             Category:
                             {editingProductId === product.productID ? (
                                 <select
-                                    className="mt-1 p-2 border border-gray-300 rounded w-full"
+                                    className="mt-1 p-2 border border-gray-800 rounded w-full"
                                     value={updatedProduct.CategoryId}
                                     onChange={(e) =>
                                         setUpdatedProduct((prevProduct) => ({
                                             ...prevProduct,
-                                            CategoryId: parseInt(e.target.value),
+                                            CategoryId: e.target.value,
                                         }))
                                     }
                                 >
@@ -183,13 +189,13 @@ const ProductCard = ({
                             {editingProductId === product.productID ? (
                                 <>
                                     <button
-                                        className={`bg-green-500 text-white p-2 rounded hover:bg-green-600 focus:outline-none focus:shadow-outline-green`}
+                                        className={`text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2`}
                                         onClick={() => handleUpdateProduct(product.productID)}
                                     >
                                         Submit
                                     </button>
                                     <button
-                                        className={`bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:shadow-outline-red ml-2`}
+                                        className={`text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2`}
                                         onClick={() => handleEditClick(null)}
                                     >
                                         Cancel
@@ -199,7 +205,7 @@ const ProductCard = ({
                                 <>
                                     <div className="ml-4">
                                         <button
-                                            className={`bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow`}
+                                            className={`text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2`}
                                             onClick={() =>
                                                 handleEditClick(
                                                     product.productID,
@@ -215,7 +221,7 @@ const ProductCard = ({
                                             Edit
                                         </button>
                                         <button
-                                            className={`bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:shadow-outline-red ml-2 ${!product.isActive ? 'pointer-events-none' : ''}`}
+                                            className={`text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 ${!product.isActive ? 'pointer-events-none' : ''}`}
                                             onClick={() => handleDeleteProduct(product.productID)}
                                         >
                                             Delete

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import ImageUtil from '../UtilComponent/ImageUtil'; 
 
 // New component for avatar initials
 const AvatarInitials = ({ initials }) => (
@@ -11,6 +12,7 @@ const AvatarInitials = ({ initials }) => (
 
 const ProfileDataPopup = ({ togglePopup, showPopup, user }) => {
   const navigate = useNavigate();
+  const popupRef = useRef(null);
 
   const handleLogout = () => {
     // Clear the user data from localStorage
@@ -23,6 +25,25 @@ const ProfileDataPopup = ({ togglePopup, showPopup, user }) => {
     // Navigate to the Login page
     navigate('/login');
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        // Clicked outside the popup, close it
+        togglePopup();
+      }
+    };
+
+    // Add event listener when the popup is shown
+    if (showPopup) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Remove event listener when the component unmounts or the popup is hidden
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showPopup, togglePopup]);
 
   // Function to get initials from user's name
   const getInitials = (name) => {
@@ -38,15 +59,13 @@ const ProfileDataPopup = ({ togglePopup, showPopup, user }) => {
   }
 
   return (
-    <div className="">
+    <div ref={popupRef} className="">
       <div className="flex items-center justify-end cursor-pointer" onClick={togglePopup}>
         {/* Display avatar initials if no profile image */}
-        {user.profileImage ? (
-          <img
-            src={user.profileImage}
-            alt="Profile"
-            className="h-8 w-8 rounded-full object-cover mr-2"
-          />
+        {user.imageName ? (
+          <div className={`flex items-center justify-center h-8 w-8 rouded-full mr-2 object-cover`}>
+          <ImageUtil imageName={user.imageName}/>
+      </div>
         ) : (
           <AvatarInitials initials={getInitials(user.userName)} />
         )}
@@ -68,7 +87,7 @@ const ProfileDataPopup = ({ togglePopup, showPopup, user }) => {
         </svg>
       </div>
       {showPopup && (
-        <div className="top-15 right-2 bg-white border shadow-md rounded-md">
+        <div className="top-15 right-2 bg-white border shadow-md rounded-md fixed">
           {/* Add some styling here */}
           <p className="text-gray-800 rounded-t-md p-4 border-b-2">
               {/* <AvatarInitials initials={getInitials(user.userName)}/> */}

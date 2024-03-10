@@ -6,7 +6,7 @@ import { showToast, ToastUtils } from '../UtilComponent/ToastUtil';
 import useAuth from '../UtilComponent/AuthUtil';
 
 const SignUp = () => {
-
+  const defaultImgSrc = "/Images/no-image-available.png";
   const navigate = useNavigate(); // Initialize useNavigate
   const axiosInstance = axios.create({
     headers: {
@@ -20,6 +20,10 @@ const SignUp = () => {
     password: '',
     firstName: '',
     lastName: '',
+    imageName: '',
+    imageFile: null,
+    imageSrc: defaultImgSrc
+
   });
   const { checkTokenValidity } = useAuth();
 
@@ -28,17 +32,37 @@ const SignUp = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-  
+
   const isValidPassword = (password) => {
     // Add your password validation logic here
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,20}$/;
     return passwordRegex.test(password);
   };
-  
 
+  const showPreivew = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      let imageFile = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = X => {
+        setFormData({
+          ...formData,
+          imageFile,
+          imageSrc: X.target.result
+        })
+      }
+      reader.readAsDataURL(imageFile)
+    }
+    else {
+      setFormData({
+        ...formData,
+        imageFile: null,
+        imageSrc: defaultImgSrc
+      })
+    }
+  }
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === 'userName') {
       // Validating username (allowing only letters, numbers, dots, and underscores)
       const validInput = /^[a-zA-Z0-9._]*$/;
@@ -56,14 +80,25 @@ const SignUp = () => {
       }));
     }
   };
-  
-  
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const userData = new FormData()
+    userData.append('userName', formData.userName)
+    userData.append('userEmail', formData.userEmail)
+    userData.append('password', formData.password)
+    userData.append('firstName', formData.firstName)
+    userData.append('lastName', formData.lastName)
+    userData.append('imageFile', formData.imageFile)
+    userData.append('imageName', formData.imageName)
 
     try {
-      const response = await axiosInstance.post('/api/1/users/registeruser', formData);
+      const response = await axiosInstance.post('/api/1/users/registeruser', userData, {
+        headers : { "Content-Type": "multipart/form-data" }
+      } 
+      );
       console.log(response.data);
       if (response.data.status === 1) {
         showToast(`Success: ${response.data.message}`, true, 1000);
@@ -88,8 +123,14 @@ const SignUp = () => {
       <ToastUtils />
       <Link to="/" className="text-blue-500 hover:underline">Back</Link>
       <div className="max-w-md mx-auto mt-8 p-8 bg-white rounded shadow-md">
-        <h2 className="text-3xl font-bold mb-6">Sign Up</h2>
+        <h2 className="text-3xl font-bold mb-6 pl">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex justify-center">
+            <img src={formData.imageSrc} className="object-cover w-auto h-auto max-h-48 place-items-center" />
+          </div>
+          <div className="flex justify-center">
+            <input type="file" accept="image/*" onChange={showPreivew} />
+          </div>
           <div>
             <label htmlFor="firstName">First Name:</label>
             <input

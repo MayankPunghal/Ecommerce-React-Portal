@@ -3,7 +3,6 @@ import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate
 import { showToast, ToastUtils } from '../UtilComponent/ToastUtil';
-import EncryptionUtil from '../UtilComponent/EncryptionUtil';
 
 const Login = () => {
   const navigate = useNavigate(); // Initialize useNavigate
