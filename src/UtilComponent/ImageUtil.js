@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const ImageUtil = ({ imageCategory, imageName, altName }) => {
+const ImageUtil = ({imageName, altName }) => {
   const [ImageUrl, setImageUrl] = useState('');
   const axiosInstance = axios.create({
     headers: {
@@ -25,7 +25,7 @@ const ImageUtil = ({ imageCategory, imageName, altName }) => {
 
   return (
     <div>
-    <img className = "object-cover w-auto h-auto max-h-48" src={ImageUrl} alt={`${altName}`} />
+    <img className = "object-fit h-auto max-h-48" src={ImageUrl} alt={`${altName}`} />
     </div>
   );
 };

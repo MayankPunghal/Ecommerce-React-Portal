@@ -97,7 +97,7 @@ const ProductCard = ({
                                 {editingProductId === product.productID ?
                                     (
                                         <input
-                                            className="border border-gray-800 p-2 rounded w-64"
+                                            className="border border-gray-800 p-2 rounded w-58 overflow-hidden"
                                             type="text"
                                             value={updatedProduct.Description}
                                             onChange={(e) =>
