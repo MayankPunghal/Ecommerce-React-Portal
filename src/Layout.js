@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, Outlet } from 'react-router-dom';
+import { useLocation, Outlet, Link } from 'react-router-dom';
 import ProfileDataPopup from './HelperComponents/ProfileDataPopup';
 import SessionUtil from './UtilComponent/SessionUtil';
 
@@ -19,12 +19,21 @@ const Layout = ({ children }) => {
     <div style={{ position: 'relative', zIndex: 1 }}>
       <SessionUtil timeoutInMinutes={5} />
       {shouldshowPopup && (
-        <div className="fixed top-0 right-0 p-4">
-          <ProfileDataPopup togglePopup={togglePopup} showPopup={showPopup} user={loggedInUser} />
+        <div>
+          <div className="fixed top-0 left-0 p-4 w-36 h-auto z-20">
+            <Link to="/Ecom/home">
+              <img src="/EcomDemoIconPng.png" className="" alt="Ecom Logo" />
+            </Link>
+          </div>
+          <div className="fixed top-0 right-0 p-2 h-14 w-full backdrop-blur-sm z-10 brightness-90">
+            <ProfileDataPopup togglePopup={togglePopup} showPopup={showPopup} user={loggedInUser} />
+          </div>
         </div>
       )}
-      {children}
-      <Outlet />
+      <div className="mt-10">
+        {children}
+        <Outlet />
+      </div>
     </div>
   );
 };
